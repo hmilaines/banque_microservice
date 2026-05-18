@@ -1,0 +1,73 @@
+# schema.gql – Schéma GraphQL de l'API Gateway Bancaire
+
+type Compte {
+  id:           String!
+  proprietaire: String!
+  email:        String!
+  solde:        Float!
+  type:         String!
+  statut:       String!
+  createdAt:    String!
+}
+
+type Transaction {
+  id:           String!
+  compteSource: String!
+  compteDest:   String
+  montant:      Float!
+  type:         String!
+  statut:       String!
+  description:  String
+  createdAt:    String!
+}
+
+type Notification {
+  id:        String!
+  compteId:  String!
+  email:     String
+  type:      String!
+  message:   String!
+  lue:       Boolean!
+  createdAt: String!
+}
+
+type MutationResult {
+  success: Boolean!
+  message: String!
+}
+
+# ── Queries ──────────────────────────────────────────────────
+type Query {
+  # Comptes
+  compte(id: String!): Compte
+  comptes: [Compte!]!
+
+  # Transactions
+  transaction(id: String!): Transaction
+  transactions: [Transaction!]!
+  transactionsDuCompte(compteId: String!): [Transaction!]!
+
+  # Notifications
+  notificationsDuCompte(compteId: String!): [Notification!]!
+  toutesLesNotifications: [Notification!]!
+}
+
+# ── Mutations ────────────────────────────────────────────────
+type Mutation {
+  # Comptes
+  creerCompte(proprietaire: String!, email: String!, soldeInitial: Float, type: String): Compte!
+  bloquerCompte(id: String!): Compte!
+  supprimerCompte(id: String!): MutationResult!
+
+  # Transactions
+  effectuerTransaction(
+    compteSource: String!
+    compteDest:   String
+    montant:      Float!
+    type:         String!
+    description:  String
+  ): Transaction!
+
+  # Notifications
+  marquerNotificationLue(id: String!): Notification!
+}
