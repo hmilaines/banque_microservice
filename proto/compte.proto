@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package compte;
+
+// ─── Messages ───────────────────────────────────────────────
+message Compte {
+  string id          = 1;
+  string proprietaire = 2;
+  string email       = 3;
+  double solde       = 4;
+  string type        = 5;   // "courant" | "epargne"
+  string statut      = 6;   // "actif" | "bloque"
+  string createdAt   = 7;
+}
+
+// CreateCompte
+message CreateCompteRequest {
+  string proprietaire = 1;
+  string email        = 2;
+  double solde_initial = 3;
+  string type         = 4;
+}
+message CreateCompteResponse {
+  Compte compte = 1;
+}
+
+// GetCompte
+message GetCompteRequest {
+  string id = 1;
+}
+message GetCompteResponse {
+  Compte compte = 1;
+}
+
+// GetAllComptes
+message GetAllComptesRequest {}
+message GetAllComptesResponse {
+  repeated Compte comptes = 1;
+}
+
+// UpdateSolde (utilisé en interne après une transaction)
+message UpdateSoldeRequest {
+  string id     = 1;
+  double montant = 2;   // positif = crédit, négatif = débit
+}
+message UpdateSoldeResponse {
+  Compte compte = 1;
+  string message = 2;
+}
+
+// DeleteCompte
+message DeleteCompteRequest {
+  string id = 1;
+}
+message DeleteCompteResponse {
+  bool   success = 1;
+  string message = 2;
+}
+
+// BloquerCompte
+message BloquerCompteRequest {
+  string id = 1;
+}
+message BloquerCompteResponse {
+  Compte compte  = 1;
+  string message = 2;
+}
+
+// ─── Service ─────────────────────────────────────────────────
+service CompteService {
+  rpc CreateCompte   (CreateCompteRequest)   returns (CreateCompteResponse);
+  rpc GetCompte      (GetCompteRequest)      returns (GetCompteResponse);
+  rpc GetAllComptes  (GetAllComptesRequest)  returns (GetAllComptesResponse);
+  rpc UpdateSolde    (UpdateSoldeRequest)    returns (UpdateSoldeResponse);
+  rpc DeleteCompte   (DeleteCompteRequest)   returns (DeleteCompteResponse);
+  rpc BloquerCompte  (BloquerCompteRequest)  returns (BloquerCompteResponse);
+}

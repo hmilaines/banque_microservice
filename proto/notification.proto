@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package notification;
+
+// ─── Messages ───────────────────────────────────────────────
+message Notification {
+  string id        = 1;
+  string compteId  = 2;
+  string email     = 3;
+  string type      = 4;    // "transaction" | "alerte_solde" | "blocage"
+  string message   = 5;
+  bool   lue       = 6;
+  string createdAt = 7;
+}
+
+// GetNotificationsByCompte
+message GetNotificationsByCompteRequest {
+  string compte_id = 1;
+}
+message GetNotificationsByCompteResponse {
+  repeated Notification notifications = 1;
+}
+
+// GetAllNotifications
+message GetAllNotificationsRequest {}
+message GetAllNotificationsResponse {
+  repeated Notification notifications = 1;
+}
+
+// MarquerLue
+message MarquerLueRequest {
+  string id = 1;
+}
+message MarquerLueResponse {
+  Notification notification = 1;
+  string       message      = 2;
+}
+
+// ─── Service ─────────────────────────────────────────────────
+service NotificationService {
+  rpc GetNotificationsByCompte (GetNotificationsByCompteRequest) returns (GetNotificationsByCompteResponse);
+  rpc GetAllNotifications      (GetAllNotificationsRequest)      returns (GetAllNotificationsResponse);
+  rpc MarquerLue               (MarquerLueRequest)               returns (MarquerLueResponse);
+}
